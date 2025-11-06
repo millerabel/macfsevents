@@ -94,9 +94,11 @@ static PyObject* pyfsevents_loop(PyObject* self, PyObject* args) {
     PyObject* thread;
     if (!PyArg_ParseTuple(args, "O:loop", &thread))
         return NULL;
-    if (! PyEval_ThreadsInitialized()) {
+#if PY_MAJOR_VERSION < 3 || (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION < 7)
+    if (!PyEval_ThreadsInitialized()) {
         PyEval_InitThreads();
     }
+#endif
 
     /* allocate info and store thread state */
     PyObject* value = PyDict_GetItem(loops, thread);
